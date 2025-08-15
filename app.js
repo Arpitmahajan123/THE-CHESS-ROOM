@@ -29,6 +29,7 @@ app.get('/', (req, res) => {
     res.render('index', {title : "Chess Game"});
 });
 
+// Frontend Se Request Aayegi Backend Mei Isske Pass [io.on].
 io.on("connection", function(uniquesocket){
     console.log("New player connected");
 });
