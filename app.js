@@ -48,7 +48,7 @@ io.on("connection", function(uniquesocket){
     }
 
     uniquesocket.on("disconnect", function(){
-        
+
         if(uniquesocket.id === players.white){
             delete players.white;
         }
@@ -56,6 +56,42 @@ io.on("connection", function(uniquesocket){
         else if(uniquesocket.id === players.black){
             delete players.black;
         }
+    });
+
+
+    uniquesocket.on("move", (move) => {
+
+        try {
+
+            if(chess.turn() === 'W' && uniquesocket.id !== players.white){ 
+                uniquesocket.emit("invalidMove");
+                return;
+            }
+            if(chess.turn() === 'B' && uniquesocket.id!== players.black){
+                uniquesocket.emit("invalidMove");
+                return;
+            }
+
+            const result = chess.move(move);
+
+            // If Turn has been changed, emit the new board state.
+
+            if(result){
+                currentPlayer = chess.turn();
+                io.emit("move", move);
+                // FEN => It Shows Current Board State.
+                io.emit("boardState", chess.fen());
+            }
+            else{
+                console.log("Invalid Move", move);
+                uniquesocket.emit("invalidMove", move);
+            }
+            
+        } catch (err){
+            console.log(err);
+            uniquesocket.emit("Invalid Move", err);
+        }
+
     });
 
 });
