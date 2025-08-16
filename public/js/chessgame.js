@@ -7,4 +7,6 @@ const socket = io();
 
 // Abhe Hum Ye Frontend Pe Bhejenge.
 
-socket.emit("Chutiya User !");
+const chess = new Chess();
+
+const boardElement = document.getElementById('.chessboard');
